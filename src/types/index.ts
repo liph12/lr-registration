@@ -31,7 +31,7 @@ export interface AccountDetails {
   firstName: string;
   middleName: string;
   lastName: string;
-  gender: string;
+  gender: boolean;
   sex: AutoCompleteType;
   country: string;
   state: string;
@@ -43,10 +43,26 @@ export interface AccountDetails {
   mobileNumber: string;
   phoneNumber: string;
   citizenShip: string;
-  maritalStatus: string;
+  maritalStatus: AutoCompleteType;
   tin: string;
   fbLink: string;
   personalBackground: PersonalBackground;
+}
+
+export interface UserAccount {
+  email: string;
+  accountType: string;
+  uplineId: number | null;
+  verificationCode: string;
+  agreed: boolean;
+  fullURL: string;
+}
+
+export interface CompletedSteps {
+  basicInformation: boolean;
+  contactsAndSocials: boolean;
+  completeAddress: boolean;
+  personalBackground: boolean;
 }
 
 export interface AccountDetailsHandler {

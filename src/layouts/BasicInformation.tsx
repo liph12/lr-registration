@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Stack, Grid2 as Grid, Autocomplete } from "@mui/material";
 import CustomTextField from "../utils/CustomTextField";
 import { AccountDetailsHandler } from "../types";
@@ -7,11 +6,6 @@ import Label from "../utils/Label";
 interface AutoCompleteValue {
   id: number;
   label: string;
-}
-
-interface AutoCompleteType {
-  select: AutoCompleteValue[];
-  value: AutoCompleteValue | null;
 }
 
 const sexAutocomplete = [
@@ -25,45 +19,32 @@ const sexAutocomplete = [
   },
 ];
 
+const maritalStatusAutocomplete = [
+  {
+    id: 1,
+    label: "Single",
+  },
+  {
+    id: 2,
+    label: "Married",
+  },
+  {
+    id: 3,
+    label: "Separated",
+  },
+];
+
 export default function BasicInformation({
   handleChange,
   accountDetails,
   handleChangeAutocomplete,
   handleChangeAutocompleteContent,
 }: AccountDetailsHandler) {
-  const [gender, setGender] = useState<AutoCompleteType>({
-    select: [
-      {
-        id: 1,
-        label: "Male",
-      },
-      {
-        id: 2,
-        label: "Female",
-      },
-    ],
-    value: null,
-  });
-  const [maritalStatus, setMaritalStatus] = useState<AutoCompleteType>({
-    select: [
-      {
-        id: 1,
-        label: "Single",
-      },
-      {
-        id: 2,
-        label: "Married",
-      },
-      {
-        id: 3,
-        label: "Separated",
-      },
-    ],
-    value: null,
-  });
-
   const handleChangeSex = (v: AutoCompleteValue | null) =>
     handleChangeAutocomplete("sex", sexAutocomplete, v);
+
+  const handleChangeMaritalStatus = (v: AutoCompleteValue | null) =>
+    handleChangeAutocomplete("maritalStatus", maritalStatusAutocomplete, v);
 
   return (
     <>
@@ -140,19 +121,19 @@ export default function BasicInformation({
         <Stack spacing={1}>
           <Label title="Marital Status" />
           <Autocomplete
-            options={maritalStatus.select}
-            value={maritalStatus.value}
+            options={maritalStatusAutocomplete}
+            value={accountDetails.maritalStatus.value}
             renderInput={(params) => (
               <CustomTextField
                 params={params}
-                handleChange={handleChange}
+                handleChange={handleChangeAutocompleteContent}
                 name="maritalStatus"
                 placeholder="Marital Status"
-                value={accountDetails.maritalStatus}
+                value={accountDetails.maritalStatus.content}
               />
             )}
             onChange={(e, v) => {
-              setMaritalStatus((prevState) => ({ ...prevState, value: v }));
+              handleChangeMaritalStatus(v);
             }}
             isOptionEqualToValue={(option, value) =>
               value === undefined || option.id === value.id

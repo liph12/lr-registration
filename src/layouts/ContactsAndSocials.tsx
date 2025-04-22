@@ -1,12 +1,16 @@
 import { Stack, Grid2 as Grid } from "@mui/material";
 import CustomTextField from "../utils/CustomTextField";
 import { AccountDetailsHandler } from "../types";
+import { useAppProvider } from "../providers/AppProvider";
 import Label from "../utils/Label";
 
 export default function ContactAndSocials({
   handleChange,
   accountDetails,
 }: AccountDetailsHandler) {
+  const { userAccount } = useAppProvider();
+  const international = userAccount.accountType === "international";
+
   return (
     <>
       <Grid size={{ lg: 4, md: 6, xs: 12 }}>
@@ -42,18 +46,20 @@ export default function ContactAndSocials({
           />
         </Stack>
       </Grid>
-      <Grid size={{ lg: 4, md: 6, xs: 12 }}>
-        <Stack spacing={1}>
-          <Label title="TIN (Optional)" required={false} />
-          <CustomTextField
-            handleChange={handleChange}
-            name="tin"
-            placeholder="TIN (Optional)"
-            value={accountDetails.tin}
-          />
-        </Stack>
-      </Grid>
-      <Grid size={{ lg: 6, md: 6, xs: 12 }}>
+      {!international && (
+        <Grid size={{ lg: 4, md: 6, xs: 12 }}>
+          <Stack spacing={1}>
+            <Label title="TIN (Optional)" required={false} />
+            <CustomTextField
+              handleChange={handleChange}
+              name="tin"
+              placeholder="TIN"
+              value={accountDetails.tin}
+            />
+          </Stack>
+        </Grid>
+      )}
+      <Grid size={{ lg: international ? 8 : 6, md: 6, xs: 12 }}>
         <Stack spacing={1}>
           <Label title="Facebook Link" />
           <CustomTextField

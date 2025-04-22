@@ -1,8 +1,9 @@
 import React from "react";
-import { Box, TextField, Typography } from "@mui/material";
+import { Box, TextField, Typography, TextFieldProps } from "@mui/material";
 import { AutocompleteRenderInputParams } from "@mui/material/Autocomplete";
 
 interface CustomTextFieldProps {
+  props?: TextFieldProps;
   params?: AutocompleteRenderInputParams;
   type?: string;
   value: string;
@@ -13,6 +14,7 @@ interface CustomTextFieldProps {
 }
 
 export default function CustomTextField({
+  props,
   params,
   type = "text",
   value,
@@ -32,6 +34,7 @@ export default function CustomTextField({
       >
         <TextField
           {...params}
+          {...props}
           fullWidth
           autoComplete="off"
           onChange={handleChange}

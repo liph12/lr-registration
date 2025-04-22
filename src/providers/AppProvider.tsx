@@ -8,8 +8,9 @@ import {
 import { useMediaQuery } from "@mui/material";
 import { ThemeProvider, createTheme, useTheme } from "@mui/material/styles";
 import useAxios from "../hooks/useAxios";
+import { UserAccount, CompletedSteps } from "../types";
 
-type FieldType = string | number | boolean;
+type FieldType = string | number | boolean | null;
 
 interface Upline {
   id: number | null;
@@ -18,20 +19,16 @@ interface Upline {
   phone: string;
 }
 
-interface UserAccount {
-  email: string;
-  accountType: string;
-  uplineId: number | null;
-  verificationCode: string | null;
-  agreed: boolean;
-  fullURL: string;
-}
-
 interface AppContextType {
   desktop: boolean;
   userAccount: UserAccount;
   upline: Upline | null;
-  handleUserAccount: (k: string, v: FieldType) => void;
+  completedSteps: CompletedSteps;
+  handleUpdateCompletedStep: <K extends keyof CompletedSteps>(
+    completed: boolean,
+    key: K
+  ) => void;
+  handleUserAccount: <K extends keyof UserAccount>(k: K, v: FieldType) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -44,7 +41,7 @@ const defUserAccount: UserAccount = {
   email: "",
   accountType: "",
   uplineId: null,
-  verificationCode: null,
+  verificationCode: "",
   agreed: false,
   fullURL: window.location.href,
 };
@@ -69,11 +66,30 @@ const AppProvider = ({ children }: AppProviderProps) => {
   const axiosInstance = useAxios();
   const [upline, setUpline] = useState<Upline | null>(null);
   const [userAccount, setUserAccount] = useState(defUserAccount);
+  const [completedSteps, setCompletedSteps] = useState<CompletedSteps>({
+    basicInformation: false,
+    contactsAndSocials: false,
+    completeAddress: false,
+    personalBackground: false,
+  });
 
-  const handleUserAccount = (k: string, v: FieldType) => {
+  const handleUserAccount = <K extends keyof UserAccount>(
+    k: K,
+    v: FieldType
+  ) => {
     setUserAccount((prev) => ({
       ...prev,
       [k]: v,
+    }));
+  };
+
+  const handleUpdateCompletedStep = <K extends keyof CompletedSteps>(
+    completed: boolean,
+    key: K
+  ) => {
+    setCompletedSteps((prevState) => ({
+      ...prevState,
+      [key]: completed,
     }));
   };
 
@@ -91,6 +107,7 @@ const AppProvider = ({ children }: AppProviderProps) => {
           const uplineName = uplineData.name;
           const { email, phone, id } = uplineData.details;
 
+          handleUserAccount("accountType", type);
           setUpline({
             id: id,
             email: email,
@@ -108,7 +125,14 @@ const AppProvider = ({ children }: AppProviderProps) => {
 
   return (
     <AppContext.Provider
-      value={{ desktop, userAccount, upline, handleUserAccount }}
+      value={{
+        desktop,
+        userAccount,
+        upline,
+        completedSteps,
+        handleUpdateCompletedStep,
+        handleUserAccount,
+      }}
     >
       <ThemeProvider theme={appTheme}>{children}</ThemeProvider>
     </AppContext.Provider>

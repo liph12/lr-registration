@@ -1,7 +1,7 @@
-import { Box, CircularProgress } from "@mui/material";
 import Content from "./Content";
 import { ReactNode } from "react";
 import { useAppProvider } from "../providers/AppProvider";
+import SuspenseOverlay from "./SuspenseOverlay";
 
 export default function Suspense({ children }: { children: ReactNode }) {
   const { upline } = useAppProvider();
@@ -12,16 +12,7 @@ export default function Suspense({ children }: { children: ReactNode }) {
         <>{children}</>
       ) : (
         <Content>
-          <Box
-            sx={{
-              height: "75vh",
-              alignContent: "center",
-              alignItems: "center",
-              textAlign: "center",
-            }}
-          >
-            <CircularProgress size={50} color="error" />
-          </Box>
+          <SuspenseOverlay />
         </Content>
       )}
     </>
